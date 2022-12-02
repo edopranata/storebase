@@ -9,9 +9,9 @@
         <div class="flex-none">
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                    <div class="w-11 rounded-full">
-                        <img src="https://placeimg.com/80/80/people" />
-                    </div>
+                    <span class="w-11 rounded-full">
+                        <img alt="SBR Logo" src="/img/sbr-logo.png" />
+                    </span>
                 </label>
                 <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-b-xl w-52 border-t-2 border-primary">
                     <li><a class="justify-between">{{ $page.props.auth.user.name}}</a></li>
@@ -24,6 +24,6 @@
 </template>
 
 <script setup>
-import { Link, usePage } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 </script>
 
