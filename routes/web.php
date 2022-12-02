@@ -23,17 +23,14 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth'])->group(function (){
 //    Route::group(function (){
-        Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function (){
-            Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('index');
-        });
-        Route::group(['prefix' => 'blank', 'as' => 'blank.'], function (){
-            Route::get('/', [\App\Http\Controllers\DashboardController::class, 'blank'])->name('index');
-        });
+
         Route::group(['prefix' => 'app', 'as' => 'app.'], function (){
+            Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('index');
+
             Route::resource('report', \App\Http\Controllers\Report\ReportIndexController::class)->only(['index']);
             Route::group(['prefix' => 'report', 'as' => 'report.'], function (){
                 Route::resource('transaction', \App\Http\Controllers\Report\ReportDailyTransactionController::class)->only(['index']);
-                Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index']);
+                Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
             });
         });
 //    });

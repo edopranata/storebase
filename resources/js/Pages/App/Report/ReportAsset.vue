@@ -12,6 +12,9 @@
                     <div class="stat-title">Total Asset</div>
                     <div class="stat-value">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(props.total.balance) }}</div>
                     <div class="stat-desc">Hingga {{ props.position }}</div>
+                    <div class="stat-actions flex justify-end">
+                        <a class="btn btn-sm btn-outline btn-warning" href="#" onclick="window.open(route('app.report.asset.show', 'download'), '_blank')">Download</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,7 +61,7 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 
 import PageTitle from '@/Components/PageTitle.vue'
 import Breadcrumb from "@/Shared/Breadcrumb.vue";
@@ -66,7 +69,7 @@ import Pagination from "@/Components/Pagination.vue";
 
 const breadcrumbs = [
     {
-        "url": route('dashboard.index'),
+        "url": route('app.index'),
         "label": "Beranda"
     },
     {

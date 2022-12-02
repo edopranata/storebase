@@ -4,18 +4,18 @@
         <ul class="menu overflow-y-auto w-80 text-base-content bg-base-200 print:hidden">
             <li class="bg-primary/75 text-base-100 hover:bg-primary/100 transition-all">
                 <div class="navbar h-20 border-primary border-b-2">
-                    <a class="normal-case text-xl">TB-SBR</a>
+                    <Link :href="route('app.index')" class="normal-case text-xl">TB-SBR</Link>
                 </div>
             </li>
             <!-- Sidebar content here -->
             <li>
-                <Link :class="routePath.current.startsWith('/dashboard') ? 'border-l-4 border-primary bg-base-400' : 'pl-5'" :href="route('dashboard.index')">
-                    <BaseIcon size="20" :path="mdiHome"/> Dashboard
+                <Link :class="route().current('app.index') ? 'border-l-4 border-primary bg-base-400' : 'pl-5'" :href="route('app.index')">
+                    <BaseIcon size="20" :path="mdiHome"/> Beranda
                 </Link>
             </li>
             <li>
                 <Link :class="routePath.current.startsWith('/app/report') ? 'border-l-4 border-primary bg-base-400' : 'pl-5'" :href="route('app.report.index')">
-                    <BaseIcon size="20" :path="mdiBallot"/> Report
+                    <BaseIcon size="20" :path="mdiBallot"/> Laporan
                 </Link>
             </li>
         </ul>

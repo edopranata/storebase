@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Report;
 
+use App\Exports\Report\AssetExport;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductStock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Excel;
 
 class ReportAssetController extends Controller
 {
@@ -23,5 +25,15 @@ class ReportAssetController extends Controller
                 $builder->select(DB::raw("SUM(available_stock * buying_price) as total"));
             }])->paginate()
         ]);
+    }
+
+    public function show($asset, Request $request)
+    {
+        $assets = Product::query()->with(['category', 'unit'])->withCount([
+            'stocks as total_asset' => function ($builder){
+                $builder->select(DB::raw("SUM(available_stock * buying_price) as total"));
+            }])->get();
+// return (new InvoicesExport)->download('invoices.pdf', \Maatwebsite\Excel\Excel::MPDF);
+        return Excel::download(new AssetExport(), now()->format('d-m-Y')  . '-asset.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

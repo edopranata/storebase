@@ -19,7 +19,7 @@ import Breadcrumb from "@/Shared/Breadcrumb.vue";
 const breadcrumbs = [
     {
         "url": null,
-        "label": "Dashboard"
+        "label": "Beranda"
     }
 ]
 </script>

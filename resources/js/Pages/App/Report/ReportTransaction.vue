@@ -195,7 +195,7 @@ import Breadcrumb from "@/Shared/Breadcrumb.vue";
 
 const breadcrumbs = [
     {
-        "url": route('dashboard.index'),
+        "url": route('app.index'),
         "label": "Beranda"
     },
     {

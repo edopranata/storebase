@@ -1,7 +1,7 @@
 <template>
     <div class="breadcrumbs mb-4 border-b p-4 print:hidden">
         <ul>
-            <li><Link :href="route('dashboard.index')"><BaseIcon :path="mdiHome"/></Link></li>
+            <li><Link :href="route('app.index')"><BaseIcon :path="mdiHome"/></Link></li>
             <li v-for="link in links">
                 <Component
                     :is="link.url ? Link : 'span'"
