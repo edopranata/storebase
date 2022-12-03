@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function (){
             Route::group(['prefix' => 'report', 'as' => 'report.'], function (){
                 Route::resource('transaction', \App\Http\Controllers\Report\ReportDailyTransactionController::class)->only(['index']);
                 Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
+                Route::resource('stock', \App\Http\Controllers\Report\ReportStockController::class)->only(['index', 'show', 'edit']);
             });
         });
 //    });

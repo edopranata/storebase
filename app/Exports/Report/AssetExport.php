@@ -42,7 +42,7 @@ class AssetExport implements WithEvents, WithTitle, WithDrawings, WithColumnWidt
         return Product::query()->with(['category', 'unit'])->withCount([
             'stocks as total_asset' => function ($builder){
                 $builder->select(DB::raw("SUM(available_stock * buying_price) as total"));
-            }])->take(3);
+            }]);
     }
 
     public function startCell(): string

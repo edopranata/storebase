@@ -1,5 +1,5 @@
 <template>
-    <Head title="Laporan" />
+    <Head><title>Laporan</title></Head>
 
     <Breadcrumb :links="breadcrumbs"/>
 
@@ -8,6 +8,8 @@
     <section class="px-4 flex flex-wrap gap-4">
         <Link as="button" :href="route('app.report.asset.index')" class="btn btn-outline btn-primary">Laporan Asset</Link>
         <Link as="button" :href="route('app.report.transaction.index')" class="btn btn-outline btn-primary">Laporan Transaksi</Link>
+        <Link as="button" :href="route('app.report.stock.index')" class="btn btn-outline btn-primary">Laporan Stok dan Harga Modal Produk</Link>
+
     </section>
 
 </template>
