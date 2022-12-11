@@ -6,6 +6,7 @@ use App\Exports\Report\ProductStockExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Excel;
 class ReportStockController extends Controller
@@ -28,7 +29,9 @@ class ReportStockController extends Controller
                 ];
             }),
             'products'      => Product::query()
-                ->with(['unit', 'stocks', 'prices.unit'])
+                ->with(['unit', 'stocks', 'prices' => function($price) {
+                    $price->orderBy('quantity', 'desc')->with('unit');
+                }])
                 ->when($product_name, function ($product, $name){
                     $product->where('name', 'like', '%'.$name.'%')
                         ->orWhere('barcode', 'like', '%'.$name.'%');

@@ -14,7 +14,7 @@ class ReportDailyTransactionController extends Controller
     public function index(Request $request)
     {
         $user_id = $request->user_id;
-        $transaction_date = $request->date ?: now()->subDays(2)->toDateString();
+        $transaction_date = $request->date ?: now()->toDateString();
         return inertia('App/Report/ReportTransaction', [
             'user_id'       => $request->user_id,
             'date'          => $transaction_date,

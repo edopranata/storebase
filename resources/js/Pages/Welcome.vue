@@ -1,5 +1,5 @@
 <script setup>
-import { Head } from '@inertiajs/inertia-vue3';
+import { Head, Link } from '@inertiajs/inertia-vue3';
 
 defineProps({
     canLogin: Boolean,
@@ -13,9 +13,9 @@ defineProps({
     <div class="hero min-h-screen bg-base-200">
         <div class="hero-content text-center">
             <div class="max-w-md">
-                <h1 class="text-5xl font-bold">Hello there</h1>
-                <p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
-                <button class="btn btn-primary">Get Started</button>
+                <h1 class="text-5xl font-bold">Selamat datang</h1>
+                <p class="py-6">Untuk akses halaman utama, silahkan login dengan klik tombol dibawah</p>
+                <Link :href="route('login')" as="button" class="btn btn-primary">Login</Link>
             </div>
         </div>
     </div>

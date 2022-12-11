@@ -40,8 +40,8 @@ const submit = () => {
                     <div class="card-body">
 
                         <div class="form-control">
-                            <Label for="username" value="Email" />
-                            <Input v-model="form.username" autofocus id="username" type="text" placeholder="Email" class="input-bordered" />
+                            <Label for="username" value="Username" />
+                            <Input v-model="form.username" autofocus id="username" type="text" placeholder="Username" class="input-bordered" />
                             <InputError class="mt-1" :message="form.errors.username" />
                         </div>
                         <div class="form-control">

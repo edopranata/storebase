@@ -52,32 +52,52 @@
                 <table class="w-full text-left text-base">
                     <thead class="text-sm uppercase bg-primary/20">
                     <tr>
-                        <th class="py-3 px-6">#</th>
-                        <th class="py-3 px-6">Barcode</th>
-                        <th class="py-3 px-6">Nama Barang</th>
-                        <th class="py-3 px-6">Stock</th>
-                        <th class="py-3 px-6 text-right">Total</th>
+                        <th class="py-3 px-6" rowspan="2">#</th>
+                        <th class="py-3 px-6" rowspan="2">Barcode</th>
+                        <th class="py-3 px-6" rowspan="2">Nama Barang</th>
+                        <th class="py-3 px-6 text-center border-b" colspan="3">Stock</th>
+                        <th class="py-3 px-6 text-center border-b" colspan="3">Harga Jual</th>
+                    </tr>
+
+                    <tr>
+                        <th class="py-3 px-6">Gudang</th>
+                        <th class="py-3 px-6">Toko</th>
+                        <th class="py-3 px-6">Total</th>
+
+
+                        <th class="py-3 px-6 text-right">Eceran</th>
+                        <th class="py-3 px-6 text-right">Pelanggan</th>
+                        <th class="py-3 px-6 text-right">Grosir</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-if="props.products.data.length" class="hover:cursor-pointer group border-b" v-for="(item, index) in props.products.data">
-                        <th class="group-hover:bg-base-300 py-4 px-6">{{ props.products.from + index  }}</th>
-                        <td class="group-hover:bg-base-300 py-4 px-6">
-                            <div class="badge badge-primary badge-md" >{{ item.barcode }}</div>
-                        </td>
-                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.name }}</td>
+                    <template v-if="props.products.data.length" v-for="(item, index) in props.products.data">
+                        <tr class="hidden" :set="current = {warehouse_stock: item.warehouse_stock ?? 0, store_stock: item.store_stock ?? 0, total_stock: (item.warehouse_stock ?? 0) + (item.store_stock ?? 0)}"></tr>
+                        <tr v-for="(price, i) in item.prices" class="hover:cursor-pointer group border-b">
+                            <th class="group-hover:bg-base-300 py-4 px-6">{{ (i) ? '' : props.products.from + index }}</th>
+                            <td class="group-hover:bg-base-300 py-4 px-6">
+                               <div class="badge badge-primary badge-md" v-if="!i">{{ item.barcode }}</div>
+                            </td>
+                            <td class="group-hover:bg-base-300 py-4 px-6">{{ (i) ? '' : item.name }}</td>
 
-                        <td class="group-hover:bg-base-300 py-4 px-6">
-                            <div>
-                                <div class="font-bold">Toko : {{ item.store_stock }}</div>
-                                <div class="text-sm opacity-50">Gudang : {{ item.warehouse_stock }}</div>
-                            </div>
-                        </td>
-                        <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(item.total_asset)}}</td>
+                            <td class="group-hover:bg-base-300 py-4 px-6" :set="warehouse_stock = current.warehouse_stock / price.quantity">{{ Math.floor(warehouse_stock) + ' ' + price.unit.name }}</td>
+                            <td class="group-hover:bg-base-300 py-4 px-6" :set="store_stock = current.store_stock / price.quantity">{{ Math.floor(store_stock) + ' ' + price.unit.name }}</td>
+                            <td class="group-hover:bg-base-300 py-4 px-6" :set="total_stock = current.total_stock / price.quantity">{{ Math.floor(total_stock) + ' ' + price.unit.name }}</td>
 
-                    </tr>
+                            <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(price.sell_price) }}</td>
+                            <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(price.customer_price) }}</td>
+
+                            <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(price.wholesale_price) }}</td>
+
+                            <td class="hidden">
+                                {{ current.warehouse_stock = current.warehouse_stock - Math.floor(warehouse_stock) }}
+                                {{ current.store_stock = current.store_stock - Math.floor(store_stock) }}
+                                {{ current.total_stock = current.total_stock - Math.floor(total_stock) }}
+                            </td>
+                        </tr>
+                    </template>
                     <tr v-else>
-                        <td colspan="5" class="text-center border-b-2">No Data <Link v-if="props.products.current_page > 1" class="link link-primary" :href="route('app.report.asset.index')">Goto First Page</Link></td>
+                        <td colspan="9" class="text-center border-b-2">No Data <Link v-if="props.products.current_page > 1" class="link link-primary" :href="route('app.report.asset.index')">Goto First Page</Link></td>
                     </tr>
                     </tbody>
                 </table>

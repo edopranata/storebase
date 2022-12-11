@@ -42,7 +42,7 @@ const submit = () => {
                             <Button :disabled="form.processing" type="submit" class="btn-primary">Email Password Reset Link </Button>
                             <div class="divider">OR</div>
                             <Link :href="route('login')" class="btn">Back to Login</Link>
-                            <Link :href="route('register')" class="btn btn-info mt-2">Register new Account</Link>
+                            <Link v-if="route().has('register')" :href="route('register')" class="btn btn-info mt-2">Register new Account</Link>
                         </div>
                         <div class="flex justify-between">
                         </div>

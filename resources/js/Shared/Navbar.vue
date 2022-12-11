@@ -10,10 +10,10 @@
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                     <span class="w-11 rounded-full">
-                        <img alt="SBR Logo" src="/img/sbr-logo.png" />
+                        <img alt="SBR Logo" src="/img/sbr-logo-no-padding.png" />
                     </span>
                 </label>
-                <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-b-xl w-52 border-t-2 border-primary">
+                <ul tabindex="0" class="menu menu-compact dropdown-content mt-[15px] p-2 shadow bg-base-100 rounded-b-xl w-52 border-t-2 border-primary">
                     <li><a class="justify-between">{{ $page.props.auth.user.name}}</a></li>
                     <li><Link :href="route('logout')" as="button" method="post">Logout</Link></li>
                 </ul>

@@ -24,11 +24,16 @@
                 <table class="w-full text-left text-base">
                     <thead class="text-sm uppercase bg-primary/20">
                     <tr>
-                        <th class="py-3 px-6">#</th>
-                        <th class="py-3 px-6">Barcode</th>
-                        <th class="py-3 px-6">Nama Barang</th>
-                        <th class="py-3 px-6">Stock</th>
-                        <th class="py-3 px-6 text-right">Total</th>
+                        <th class="py-3 px-6" rowspan="2">#</th>
+                        <th class="py-3 px-6" rowspan="2">Barcode</th>
+                        <th class="py-3 px-6" rowspan="2">Nama Barang</th>
+                        <th class="py-3 px-6 text-center border-b" colspan="3">Stock</th>
+                        <th class="py-3 px-6 text-right" rowspan="2">Total</th>
+                    </tr>
+                    <tr>
+                        <th class="py-3 px-6">Gudang</th>
+                        <th class="py-3 px-6">Toko</th>
+                        <th class="py-3 px-6">Total</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -39,17 +44,14 @@
                         </td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.name }}</td>
 
-                        <td class="group-hover:bg-base-300 py-4 px-6">
-                            <div>
-                                <div class="font-bold">Toko : {{ item.store_stock }}</div>
-                                <div class="text-sm opacity-50">Gudang : {{ item.warehouse_stock }}</div>
-                            </div>
-                        </td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.warehouse_stock + ' ' + item.unit.name }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.store_stock + ' ' + item.unit.name }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.store_stock + item.warehouse_stock + ' ' + item.unit.name }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(item.total_asset)}}</td>
 
                     </tr>
                     <tr v-else>
-                        <td colspan="5" class="text-center border-b-2">No Data <Link v-if="props.assets.current_page > 1" class="link link-primary" :href="route('app.report.asset.index')">Goto First Page</Link></td>
+                        <td colspan="7" class="text-center border-b-2">No Data <Link v-if="props.assets.current_page > 1" class="link link-primary" :href="route('app.report.asset.index')">Goto First Page</Link></td>
                     </tr>
                     </tbody>
                 </table>

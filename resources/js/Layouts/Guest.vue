@@ -13,7 +13,7 @@ import { Link } from "@inertiajs/inertia-vue3";
                     <li v-if="$page.props.auth.user" ><Link :href="route('dashboard.index')">Dashboard</Link></li>
                     <template v-else>
                         <li><Link :href="route('login')">Login</Link></li>
-                        <li><Link :href="route('register')">Register</Link></li>
+                        <li v-if="route().has('register')"><Link :href="route('register')">Register</Link></li>
                     </template>
                 </ul>
             </div>

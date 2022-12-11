@@ -5,10 +5,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-    Route::group(['prefix' => 'register'], function (){
-        Route::get('/', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->name('register');
-        Route::post('/', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'store']);
-    });
+//    Route::group(['prefix' => 'register'], function (){
+//        Route::get('/', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->name('register');
+//        Route::post('/', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'store']);
+//    });
     Route::group(['prefix' => 'login'], function (){
         Route::get('/', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'create'])->name('login');
         Route::post('/', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store']);
@@ -22,19 +22,16 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function (){
-//    Route::group(function (){
+    Route::group(['prefix' => 'app', 'as' => 'app.'], function (){
+        Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('index');
 
-        Route::group(['prefix' => 'app', 'as' => 'app.'], function (){
-            Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('index');
-
-            Route::resource('report', \App\Http\Controllers\Report\ReportIndexController::class)->only(['index']);
-            Route::group(['prefix' => 'report', 'as' => 'report.'], function (){
-                Route::resource('transaction', \App\Http\Controllers\Report\ReportDailyTransactionController::class)->only(['index']);
-                Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
-                Route::resource('stock', \App\Http\Controllers\Report\ReportStockController::class)->only(['index', 'show', 'edit']);
-            });
+        Route::resource('report', \App\Http\Controllers\Report\ReportIndexController::class)->only(['index']);
+        Route::group(['prefix' => 'report', 'as' => 'report.'], function (){
+            Route::resource('transaction', \App\Http\Controllers\Report\ReportDailyTransactionController::class)->only(['index']);
+            Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
+            Route::resource('stock', \App\Http\Controllers\Report\ReportStockController::class)->only(['index', 'show', 'edit']);
         });
-//    });
+    });
 
     // Authenticate Route
     Route::group(['as' => 'verification.'], function (){
