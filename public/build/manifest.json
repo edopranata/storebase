@@ -1,0 +1,128 @@
+{
+  "resources/js/app.js": {
+    "file": "assets/app.72997376.js",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/Auth/ConfirmPassword.vue",
+      "resources/js/Pages/Auth/ForgotPassword.vue",
+      "resources/js/Pages/Auth/Login.vue",
+      "resources/js/Pages/Auth/Register.vue",
+      "resources/js/Pages/Auth/ResetPassword.vue",
+      "resources/js/Pages/Auth/VerifyEmail.vue",
+      "resources/js/Pages/Blank/BlankIndex.vue",
+      "resources/js/Pages/Dashboard/DashboardIndex.vue",
+      "resources/js/Pages/Welcome.vue"
+    ],
+    "css": [
+      "assets/app.5ae713e1.css"
+    ]
+  },
+  "resources/js/Pages/Auth/ConfirmPassword.vue": {
+    "file": "assets/ConfirmPassword.dd72705c.js",
+    "src": "resources/js/Pages/Auth/ConfirmPassword.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js",
+      "_Label.604b65a5.js"
+    ]
+  },
+  "_Button.37e1d8c4.js": {
+    "file": "assets/Button.37e1d8c4.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_Label.604b65a5.js": {
+    "file": "assets/Label.604b65a5.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ForgotPassword.vue": {
+    "file": "assets/ForgotPassword.ac74decd.js",
+    "src": "resources/js/Pages/Auth/ForgotPassword.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js",
+      "_Label.604b65a5.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Login.vue": {
+    "file": "assets/Login.4a38abda.js",
+    "src": "resources/js/Pages/Auth/Login.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js",
+      "_Label.604b65a5.js"
+    ]
+  },
+  "resources/js/Pages/Auth/Register.vue": {
+    "file": "assets/Register.c825fa70.js",
+    "src": "resources/js/Pages/Auth/Register.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js",
+      "_Label.604b65a5.js"
+    ]
+  },
+  "resources/js/Pages/Auth/ResetPassword.vue": {
+    "file": "assets/ResetPassword.10c4da88.js",
+    "src": "resources/js/Pages/Auth/ResetPassword.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js",
+      "_Label.604b65a5.js"
+    ]
+  },
+  "resources/js/Pages/Auth/VerifyEmail.vue": {
+    "file": "assets/VerifyEmail.0f96703f.js",
+    "src": "resources/js/Pages/Auth/VerifyEmail.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Button.37e1d8c4.js"
+    ]
+  },
+  "resources/js/Pages/Blank/BlankIndex.vue": {
+    "file": "assets/BlankIndex.c0a60527.js",
+    "src": "resources/js/Pages/Blank/BlankIndex.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Breadcrumb.22858c94.js"
+    ]
+  },
+  "_Breadcrumb.22858c94.js": {
+    "file": "assets/Breadcrumb.22858c94.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Dashboard/DashboardIndex.vue": {
+    "file": "assets/DashboardIndex.e351adfc.js",
+    "src": "resources/js/Pages/Dashboard/DashboardIndex.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_Breadcrumb.22858c94.js"
+    ]
+  },
+  "resources/js/Pages/Welcome.vue": {
+    "file": "assets/Welcome.4d1910fa.js",
+    "src": "resources/js/Pages/Welcome.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/app.css": {
+    "file": "assets/app.5ae713e1.css",
+    "src": "resources/js/app.css"
+  }
+}
