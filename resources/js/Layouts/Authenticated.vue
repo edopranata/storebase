@@ -22,9 +22,9 @@ watch(alert, (value, oldValue, onCleanup) => {
 </script>
 
 <template>
-    <div class="drawer drawer-mobile">
+    <div class="drawer drawer-mobile" id="main-content">
         <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
+        <div class="drawer-content" id="page-content">
             <Navbar />
             <!-- Page content here -->
             <div class="w-full">

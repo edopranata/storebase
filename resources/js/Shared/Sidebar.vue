@@ -14,6 +14,11 @@
                 </Link>
             </li>
             <li>
+                <Link :class="routePath.current.startsWith('/app/inventory') ? 'border-l-4 border-primary bg-base-400' : 'pl-5'" :href="route('app.inventory.index')">
+                    <BaseIcon size="20" :path="mdiBallot"/> Inventory
+                </Link>
+            </li>
+            <li>
                 <Link :class="routePath.current.startsWith('/app/report') ? 'border-l-4 border-primary bg-base-400' : 'pl-5'" :href="route('app.report.index')">
                     <BaseIcon size="20" :path="mdiBallot"/> Laporan
                 </Link>

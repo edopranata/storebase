@@ -8,7 +8,7 @@ import { InertiaProgress } from '@inertiajs/progress';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Notifications from '@kyvg/vue3-notification'
-
+import number from '@coders-tm/vue-number-format'
 
 import AuthenticatedLayout from '@/Layouts/Authenticated.vue';
 import Guest from '@/Layouts/Guest.vue';
@@ -36,6 +36,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(Notifications)
+            .use(number)
             .mount(el);
     },
 });

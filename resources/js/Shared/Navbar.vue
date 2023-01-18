@@ -7,6 +7,9 @@
         </div>
 
         <div class="flex-none">
+            <button class="hidden btn btn-ghost btn-circle" @click="requestFullScreen()">
+                F
+            </button>
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                     <span class="w-11 rounded-full">
@@ -25,5 +28,21 @@
 
 <script setup>
 import { Link } from "@inertiajs/inertia-vue3";
+import Button from "@/Components/Button.vue";
+
+let requestFullScreen =  () => {
+    // Supports most browsers and their versions.
+    let element = document.body
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
+    }
+}
 </script>
 

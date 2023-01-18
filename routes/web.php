@@ -28,8 +28,30 @@ Route::middleware(['auth'])->group(function (){
         Route::resource('report', \App\Http\Controllers\Report\ReportIndexController::class)->only(['index']);
         Route::group(['prefix' => 'report', 'as' => 'report.'], function (){
             Route::resource('transaction', \App\Http\Controllers\Report\ReportDailyTransactionController::class)->only(['index']);
+            Route::resource('recap', \App\Http\Controllers\Report\ReportRecapTransactionController::class)->only(['index']);
+
             Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
             Route::resource('stock', \App\Http\Controllers\Report\ReportStockController::class)->only(['index', 'show', 'edit']);
+        });
+        Route::resource('inventory', \App\Http\Controllers\Inventory\InventoryController::class)->only(['index']);
+        Route::group(['prefix' => 'inventory', 'as' => 'inventory.'], function (){
+            Route::resource('request', \App\Http\Controllers\Inventory\InventoryRequestController::class)->only(['index', 'store', 'edit', 'destroy', 'show']);
+            Route::group(['prefix' => 'request', 'as' => 'request.'], function (){
+                Route::group(['prefix' => 'product', 'as' => 'product.'], function (){
+                    Route::post('{purchase}/add', [\App\Http\Controllers\Inventory\InventoryRequestController::class, 'add'])->name('add');
+                    Route::delete('{purchase}/delete', [\App\Http\Controllers\Inventory\InventoryRequestController::class, 'delete'])->name('delete');
+                    Route::patch('{purchase}/update', [\App\Http\Controllers\Inventory\InventoryRequestController::class, 'update'])->name('update');
+                    Route::patch('{purchase}/save', [\App\Http\Controllers\Inventory\InventoryRequestController::class, 'save'])->name('save');
+
+                });
+            });
+            Route::resource('maintenance', \App\Http\Controllers\Inventory\InventoryMaintenanceController::class)->only(['index']);
+        });
+
+        Route::group(['prefix' => 'request', 'as' => 'request.'], function (){
+            Route::post('supplier', [\App\Http\Controllers\Request\RequestController::class, 'supplier'])->name('get.supplier');
+            Route::post('product', [\App\Http\Controllers\Request\RequestController::class, 'product'])->name('get.product');
+
         });
     });
 
