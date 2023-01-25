@@ -33,6 +33,14 @@ Route::middleware(['auth'])->group(function (){
             Route::resource('asset', \App\Http\Controllers\Report\ReportAssetController::class)->only(['index', 'show']);
             Route::resource('stock', \App\Http\Controllers\Report\ReportStockController::class)->only(['index', 'show', 'edit']);
         });
+
+        Route::resource('management', \App\Http\Controllers\Product\ManagementController::class)->only(['index']);
+        Route::group(['prefix' => 'management', 'as' => 'management.'], function (){
+            Route::resource('product', \App\Http\Controllers\Product\ProductController::class)->only(['index']);
+            Route::resource('stock', \App\Http\Controllers\Product\StockAdjustmentController::class)->only(['index', 'store', 'edit', 'update']);
+        });
+
+
         Route::resource('inventory', \App\Http\Controllers\Inventory\InventoryController::class)->only(['index']);
         Route::group(['prefix' => 'inventory', 'as' => 'inventory.'], function (){
             Route::resource('request', \App\Http\Controllers\Inventory\InventoryRequestController::class)->only(['index', 'store', 'edit', 'destroy', 'show']);
