@@ -25,12 +25,10 @@
                         <th class="py-3 px-6">#</th>
                         <th class="py-3 px-6">Barcode / Kode</th>
                         <th class="py-3 px-6">Nama Produk</th>
-                        <th class="py-3 px-6">Deskripsi / Keterangan</th>
                         <th class="py-3 px-6">Kategori</th>
+                        <th class="py-3 px-6 text-right">Stock</th>
                         <th class="py-3 px-6">Satuan</th>
-                        <th class="py-3 px-6">Stock</th>
-                        <th class="py-3 px-6">Dibuat Oleh</th>
-                        <th class="py-3 px-6">Dibuat pada</th>
+                        <th class="py-3 px-6">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -39,15 +37,12 @@
                         <th class="group-hover:bg-base-300 py-4 px-6">{{ props.products.from + index  }}</th>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.barcode }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.name }}</td>
-                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.description }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.category }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ item.stock.total }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.unit }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">
-                            <div>Gudang : {{ item.stock.warehouse ?? 0 }}</div>
-                            <div>Toko : {{ item.stock.store ?? 0 }}</div>
+                            <Link as="button" :href="route('app.management.stock.destroy', item.id)" methods="DELETE" class="btn btn-success">Cocok</Link>
                         </td>
-                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.created_by }}</td>
-                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.created_at }}</td>
                     </tr>
                     <tr v-else>
                         <td colspan="6" class="text-center border-b-2">No Data <Link v-if="props.products.current_page > 1" class="link link-primary" :href="route('app.management.product.index')">Goto First Page</Link></td>
@@ -87,6 +82,7 @@ const breadcrumbs = [
 
 const props = defineProps({
     search: String,
+    adjustment: Object,
     products: {
         type: Object,
     },

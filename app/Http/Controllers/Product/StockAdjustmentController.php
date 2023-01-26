@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Models\Adjustment;
+use App\Models\AdjustmentProduct;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -73,6 +73,40 @@ class StockAdjustmentController extends Controller
 
     public function edit(Request $request, Adjustment $stock)
     {
-        $adjustments = $stock->load(['product']);
+        $adjustment = $stock->load('products');
+
+        $products = $adjustment->products()->with(['product.unit', 'product.category','product' => function($builder) use ($request) {
+            $builder->when($request->search, function ($query) use ($request){
+                $query->where('name', 'like', '%'.$request->search);
+            });
+        }])->paginate(10)
+            ->withQueryString()
+            ->through(function ($product) {
+                $item = $product->product;
+                return [
+                    'id' => $product->id,
+                    'barcode' => $item->barcode,
+                    'name' => $item->name,
+                    'stock' => [
+                        'warehouse' => $item->warehouse_stock,
+                        'store'     => $item->store_stock,
+                        'total'     => $item->warehouse_stock ?? 0 + $item->store_stock ?? 0
+                    ],
+                    'unit' => $item->unit ? $item->unit->name : null,
+                    'category' => $item->category ? $item->category->name : null,
+                    'created_by' => $item->user ? $item->user->name : null,
+                    'created_at' => $item->created_at->format('d-m-Y'),
+                ];
+            });
+
+        return inertia('App/Management/Stock/StockEdit', [
+            'adjustment'    => $adjustment,
+            'products'      => $products
+        ]);
+    }
+
+    public function delete(Request $request, AdjustmentProduct $stock)
+    {
+        dd($stock);
     }
 }
