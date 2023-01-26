@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,15 +18,24 @@ class Product extends Model
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    protected $appends = ['total'];
+
 
     /*
     Accessor for the total price
      */
-    public function getTotalAttribute()
-    {
-        return $this->store_stock + $this->warehouse_stock;
-    }
+//    public function getTotalAttribute()
+//    {
+//        return $this->store_stock + $this->warehouse_stock;
+//    }
+
+//    protected function total(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn ($value) => ucfirst($value),
+////            set: fn ($value) => strtolower($value),
+//        );
+//    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

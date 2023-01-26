@@ -15,8 +15,18 @@ class StockAdjustmentController extends Controller
     public function index()
     {
         $adjustments = Adjustment::query()
-            ->withCount('products')
-            ->with('products')->get();
+
+            ->with('products')
+            ->paginate(3)
+            ->withQueryString()
+            ->through(function ($adj) {
+                return [
+                    'title'         => $adj->title,
+                    'count'         => $adj->products->count(),
+                    'done'          => $adj->products->whereNotNull('status')->count(),
+                    'not_done'      => $adj->products->whereNull('status')->count()
+                ];
+            });
         return inertia('App/Management/Stock/StockIndex', compact('adjustments'));
     }
 
@@ -35,10 +45,14 @@ class StockAdjustmentController extends Controller
                 ]);
             $product = Product::query()
                 ->select(['id'])
-                ->chunk(100, function ($chunk_product) use ($adjustment) {
-                    dd($chunk_product);
-//                    $adjustment->products()->createMany($chunk_product);
+                ->get()->map(function ($pr) {
+                    return [
+                        'product_id' => $pr->id
+                    ];
                 });
+//            dd($product->toArray());
+            $adjustment->products()->createMany($product);
+
             DB::commit();
             return redirect()->back()->with('alert', [
                 'type'    => 'success',

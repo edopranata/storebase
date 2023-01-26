@@ -24,13 +24,12 @@
         </div>
         <div class="card w-full rounded-none border-2 border-info shadow-xl">
             <div class="card-body grid grid-cols-3 gap-4">
-                <div v-if="props.adjustments" v-for="(item, index) in props.adjustments" class="stats bg-primary text-primary-content">
+                <div v-if="props.adjustments" v-for="(item, index) in props.adjustments.data" class="stats bg-primary text-primary-content">
                     <div class="stat">
-                        <div class="stat-title">Current balance</div>
-                        <div class="stat-value">$89,400</div>
+                        <div class="stat-title">{{ item.title }}</div>
+                        <div class="stat-value">{{ item.done }} / {{ item.count }}</div>
                         <div class="stat-actions flex justify-end space-x-4">
-                            <button class="btn btn-sm">Withdrawal</button>
-                            <button class="btn btn-sm">deposit</button>
+                            <button :disabled="item.status" class="btn btn-sm">{{ item.status ? "Done" : "Lanjutkan" }}</button>
                         </div>
                     </div>
 
