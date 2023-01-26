@@ -89,20 +89,35 @@
                             <label class="label">
                                 <span class="label-text text-2xl font-bold">Cari Produk (Barcode / Nama Produk)</span>
                             </label>
-                            <Multiselect class="select select-bordered rounded-none focus:ring-0"
-                                         :clear-on-select="true"
-                                         :clear-on-search="true"
-                                         v-model="product.id"
-                                         placeholder="Cari Product (Barcode / Nama Produk)"
-                                         :filter-results="false"
-                                         :min-chars="3"
-                                         :resolve-on-load="false"
-                                         :delay="0"
-                                         :searchable="true"
-                                         :options="async function(query) {
-                                return await getProduct(query) // check JS block for implementation
-                            }"
-                            />
+
+                            <Combobox v-model="selected">
+                                <div class="relative mt-1">
+                                    <div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md sm:text-sm">
+                                        <ComboboxInput class="w-full border-2 rounded-lg py-2 pl-3 pr-10 text-3xl leading-5 text-gray-900" @change="query = $event.target.value"/>
+                                        <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                                        </ComboboxButton>
+                                    </div>
+                                    <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0" @after-leave="addProduct(selected.id)">
+                                        <ComboboxOptions class="absolute z-40 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            <div v-if="list.products.length === 0 && query !== ''" class="relative cursor-default select-none py-2 px-4 text-gray-700">
+                                                Nothing found.
+                                            </div>
+
+                                            <ComboboxOption v-for="person in list.products" as="template" :key="person.id" :value="person" v-slot="{ selected, active }" >
+                                                <li class="relative cursor-default select-none py-2 pl-10 pr-4" :class="{'bg-teal-600 text-white': active, 'text-gray-900': !active,}">
+                                                    <span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }">
+                                                      {{ person.name }}
+                                                    </span>
+                                                    <span v-if="selected" class="absolute inset-y-0 left-0 flex items-center pl-3" :class="{ 'text-white': active, 'text-teal-600': !active }">
+                                                      <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                                                    </span>
+                                                </li>
+                                            </ComboboxOption>
+                                        </ComboboxOptions>
+                                    </TransitionRoot>
+                                </div>
+                            </Combobox>
                         </div>
                         <table v-if="items.product_price_id.length" class="w-full text-left text-base min-w-4xl">
                             <thead class="text-sm uppercase bg-primary/20">
@@ -135,7 +150,7 @@
                                     <number v-model="items.product_price_quantity[item.id]" v-bind="{
                                     decimal: '.',
                                     separator: ',',
-                                    suffix: ' @ ' + item.price.unit.name,
+                                    suffix: ' @ ' + item.product.unit.name,
                                     masked: false,
                                 }"  class="w-32 rounded-md border-gray-300 pl-8 pr-4 text-right focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"  />
                                 </td>
@@ -177,13 +192,13 @@
 </template>
 
 <script setup>
-import {Head, useForm, Link} from '@inertiajs/vue3';
-import Multiselect from '@vueform/multiselect'
+import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { number } from '@coders-tm/vue-number-format'
-
+import {onMounted, reactive, watch, ref, computed} from "vue";
+import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot} from '@headlessui/vue'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
+import _, {debounce} from "lodash";
 import axios from "axios";
-import {onMounted, reactive, watch} from "vue";
-import _ from "lodash";
 
 import PageTitle from '@/Components/PageTitle.vue'
 import Breadcrumb from "@/Shared/Breadcrumb.vue";
@@ -217,11 +232,8 @@ const items = useForm({
 })
 
 const list = reactive({
+    products: [],
     data: props.purchases
-})
-
-const product = useForm({
-    id: ''
 })
 
 const form = useForm({
@@ -231,11 +243,30 @@ const form = useForm({
     fund: ''
 })
 
-watch(() => _.cloneDeep(product.id), (current, old) => {
-    if(current){
-        addProduct(current)
-    }
-})
+let selected = ref()
+let query = ref('')
+
+watch(
+    query,
+    debounce(function (search) {
+        if(search){
+            axios.post(
+                route('app.request.get.product'),
+                { search: search },
+                {
+                    preserveState: true,
+                    replace: true,
+                }
+            ).then(function (response) {
+                list.products = response.data;
+            });
+        }else{
+            list.products = []
+        }
+
+    }, 300),
+    { deep: true }
+);
 
 watch(() => _.cloneDeep(form), (current, old) => {
     if(current){
@@ -243,29 +274,14 @@ watch(() => _.cloneDeep(form), (current, old) => {
     }
 })
 
-
-const getProduct = async (query) => {
-
-    const response = await axios.post(route('app.request.get.product'), {search: query});
-
-    return response.data.map((item) => {
-        return { value: item.id, label: item.barcode.toUpperCase() + ' - ' + item.name.toUpperCase() }
-    })
-}
-
 const addProduct = async (id) => {
     await axios.post(route('app.inventory.request.product.add', props.purchases.id), {
         'product_id': id
     }).then( (response) => {
         list.data = response.data
         setForm(response.data)
-        product.reset()
-        product.defaults({
-            id: ''
-        })
     })
 }
-
 const removeProduct = async (id) => {
     await axios.delete(route('app.inventory.request.product.delete', id))
         .then( (response) => {
@@ -311,9 +327,7 @@ const setForm = (data) => {
 }
 
 const lastPrice = (item) => {
-    // console.log(item)
     let price = item.product.stocks[item.product.stocks.length - 1]
-    // console.log(price.buying_price)
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0  }).format(price.buying_price)
 }
 

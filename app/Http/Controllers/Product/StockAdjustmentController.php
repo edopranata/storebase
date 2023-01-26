@@ -75,11 +75,13 @@ class StockAdjustmentController extends Controller
     {
         $adjustment = $stock->load('products');
 
-        $products = $adjustment->products()->with(['product.unit', 'product.category','product' => function($builder) use ($request) {
-            $builder->when($request->search, function ($query) use ($request){
-                $query->where('name', 'like', '%'.$request->search);
-            });
-        }])->paginate(10)
+        $products = $adjustment->products()->with(['product.unit', 'product.category'])
+            ->when($request->search, function ($query) use ($request) {
+                $query
+                    ->whereRelation('product', 'name', 'like', '%'.$request->search)
+                    ->orWhereRelation('product', 'barcode', 'like', '%'.$request->search);
+            })
+        ->paginate(10)
             ->withQueryString()
             ->through(function ($product) {
                 $item = $product->product;
@@ -105,8 +107,11 @@ class StockAdjustmentController extends Controller
         ]);
     }
 
-    public function delete(Request $request, AdjustmentProduct $stock)
+    public function destroy(Request $request, AdjustmentProduct $stock)
     {
-        dd($stock);
+        $adjustment_stock = $stock->load('product');
+        $product = $stock->product;
+        $current_stock = $product->warehouse_stock ?? 0 + $product->store_stock >> 0;
+        dd($product);
     }
 }

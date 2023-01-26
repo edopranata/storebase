@@ -19,7 +19,12 @@ class RequestController extends Controller
         return Product::query()
             ->where('name',  'like', '%'.$request->search.'%')
             ->orWhere('barcode',  'like', '%'.$request->search.'%')
-            ->get()->take(20);
+            ->get()->take(20)->map(function ($item) {
+                return [
+                    'id'        => $item->id,
+                    'name'      => $item->barcode . ' ' . $item->name
+                ];
+            });
 
     }
 }

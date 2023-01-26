@@ -65,10 +65,9 @@ import Breadcrumb from "@/Shared/Breadcrumb.vue";
 import Pagination from "@/Components/Pagination.vue";
 import PageTitle from "@/Components/PageTitle.vue";
 
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { watch } from 'vue'
 import { debounce } from "lodash";
-import axios  from 'axios'
 
 const breadcrumbs = [
     {
@@ -99,7 +98,7 @@ const form_search = useForm({
 watch(
     form_search,
     debounce(function (value) {
-        axios.get(
+        router.get(
             route('app.management.product.index'),
             { search: value.search },
             {

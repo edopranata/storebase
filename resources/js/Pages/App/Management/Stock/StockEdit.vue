@@ -60,8 +60,7 @@ import Breadcrumb from "@/Shared/Breadcrumb.vue";
 import Pagination from "@/Components/Pagination.vue";
 import PageTitle from "@/Components/PageTitle.vue";
 
-import { Head, useForm, Link } from '@inertiajs/vue3';
-import axios from 'axios'
+import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { watch } from 'vue'
 import { debounce } from "lodash";
 
@@ -95,8 +94,8 @@ const form_search = useForm({
 watch(
     form_search,
     debounce(function (value) {
-        axios.get(
-            route('app.management.product.index'),
+        router.get(
+            route('app.management.stock.edit', props.adjustment.id),
             { search: value.search },
             {
                 preserveState: true,
