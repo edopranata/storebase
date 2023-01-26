@@ -29,7 +29,7 @@
                         <div class="stat-title">{{ item.title }}</div>
                         <div class="stat-value">{{ item.done }} / {{ item.count }}</div>
                         <div class="stat-actions flex justify-end space-x-4">
-                            <button :disabled="item.status" class="btn btn-sm">{{ item.status ? "Done" : "Lanjutkan" }}</button>
+                            <Link as="button" :href="route('app.management.stock.edit', item.id )" :disabled="item.status" class="btn btn-sm">{{ item.status ? "Done" : "Lanjutkan" }}</Link>
                         </div>
                     </div>
 

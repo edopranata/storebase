@@ -21,10 +21,12 @@ class StockAdjustmentController extends Controller
             ->withQueryString()
             ->through(function ($adj) {
                 return [
+                    'id'            => $adj->id,
                     'title'         => $adj->title,
                     'count'         => $adj->products->count(),
                     'done'          => $adj->products->whereNotNull('status')->count(),
-                    'not_done'      => $adj->products->whereNull('status')->count()
+                    'not_done'      => $adj->products->whereNull('status')->count(),
+                    'status'        => $adj->status
                 ];
             });
         return inertia('App/Management/Stock/StockIndex', compact('adjustments'));
@@ -50,7 +52,7 @@ class StockAdjustmentController extends Controller
                         'product_id' => $pr->id
                     ];
                 });
-//            dd($product->toArray());
+
             $adjustment->products()->createMany($product);
 
             DB::commit();
@@ -67,7 +69,10 @@ class StockAdjustmentController extends Controller
                 'message' => "Data gagal disimpan: " . $exception->getMessage()
             ]);
         }
+    }
 
-
+    public function edit(Request $request, Adjustment $stock)
+    {
+        $adjustments = $stock->load(['product']);
     }
 }
