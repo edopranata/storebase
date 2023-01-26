@@ -3,7 +3,7 @@ import Button from '@/Components/Button.vue';
 import Input from '@/Components/Input.vue';
 import InputError from '@/Components/InputError.vue';
 import Label from '@/Components/Label.vue';
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     name: '',

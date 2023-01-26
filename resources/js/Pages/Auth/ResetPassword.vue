@@ -3,7 +3,7 @@ import Button from '@/Components/Button.vue';
 import Input from '@/Components/Input.vue';
 import InputError from '@/Components/InputError.vue';
 import Label from '@/Components/Label.vue';
-import { Head, useForm } from '@inertiajs/inertia-vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     email: String,

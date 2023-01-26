@@ -5,9 +5,6 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/inertia": "^0.11.0",
-        "@inertiajs/inertia-vue3": "^0.6.0",
-        "@inertiajs/progress": "^0.2.7",
         "@kyvg/vue3-notification": "^2.4.1",
         "@mdi/js": "^7.0.96",
         "@tailwindcss/forms": "^0.5.2",
@@ -25,6 +22,7 @@
     },
     "dependencies": {
         "@coders-tm/vue-number-format": "^3.3.1",
+        "@inertiajs/vue3": "^1.0.0",
         "@vueform/multiselect": "^2.5.8",
         "moment": "^2.29.4",
         "vue-number-format": "^1.3.1"

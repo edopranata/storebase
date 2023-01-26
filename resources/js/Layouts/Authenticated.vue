@@ -4,9 +4,9 @@ import Sidebar from "@/Shared/Sidebar.vue";
 
 import {computed, watch} from "vue";
 import {notify} from "@kyvg/vue3-notification";
-import {usePage} from "@inertiajs/inertia-vue3";
+import {usePage} from "@inertiajs/vue3";
 
-const alert = computed(() => usePage().props.value.flash.alert);
+const alert = computed(() => usePage().props.flash.alert);
 watch(alert, (value, oldValue, onCleanup) => {
 
     if(value){

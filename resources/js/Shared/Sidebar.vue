@@ -33,12 +33,12 @@
 </template>
 
 <script setup>
-import {Link, usePage} from "@inertiajs/inertia-vue3";
+import {Link, usePage} from "@inertiajs/vue3";
 import BaseIcon from "@/Components/BaseIcon.vue";
-import { mdiHome, mdiBallot, mdiCog, mdiCash, mdiNoteEdit } from "@mdi/js";
+import { mdiHome, mdiBallot} from "@mdi/js";
 import {computed, onMounted, reactive, watch} from "vue";
 
-const currentRoute = computed(() => usePage().url.value);
+const currentRoute = computed(() => usePage().url);
 const routePath = reactive({
     current: ''
 })
@@ -49,6 +49,6 @@ watch(currentRoute, (value, oldValue, onCleanup) => {
 })
 
 onMounted( () => {
-    routePath.current = usePage().url.value
+    routePath.current = usePage().url
 })
 </script>

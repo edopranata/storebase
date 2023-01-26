@@ -72,7 +72,7 @@
 import PageTitle from '@/Components/PageTitle.vue'
 import Breadcrumb from "@/Shared/Breadcrumb.vue";
 
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { onMounted, watch } from "vue";
 import _ from "lodash";
 

@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import {Head, useForm, Link} from '@inertiajs/inertia-vue3';
+import {Head, useForm, Link} from '@inertiajs/vue3';
 import Multiselect from '@vueform/multiselect'
 import { number } from '@coders-tm/vue-number-format'
 

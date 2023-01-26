@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import {Head, useForm} from '@inertiajs/inertia-vue3';
+import {Head, useForm} from '@inertiajs/vue3';
 import Multiselect from '@vueform/multiselect'
 
 import PageTitle from '@/Components/PageTitle.vue'
