@@ -81,7 +81,7 @@
                     </tr>
             </tbody>
         </table>
-<!--                <Pagination v-if="props.products.data.length" :links="props.products.links" />-->
+                <Pagination v-if="props.stocks.data.length" :links="props.stocks.links" />
     </section>
 </template>
 
