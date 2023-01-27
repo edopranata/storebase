@@ -16,6 +16,16 @@ class AdjustmentProductDetailController extends Controller
 
     public function show(Request $request, AdjustmentProduct $detail)
     {
-        dd($detail->load(['stocks', 'product'])->loadSum('stocks', 'available_stock'));
+        $details = $detail->load(['stocks', 'product.unit', 'adjustment'])->loadSum('stocks', 'available_stock');
+        $stocks = $details->stocks()
+            ->with(['product.unit', 'supplier'])
+            ->paginate(10)
+            ->withQueryString();
+
+//        dd($stocks);
+        return inertia('App/Management/Details/DetailsEdit', [
+            'details'   => $details,
+            'stocks'    => $stocks,
+        ]);
     }
 }

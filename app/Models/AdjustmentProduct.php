@@ -29,4 +29,9 @@ class AdjustmentProduct extends Model
     {
         return $this->hasMany(ProductStock::class, 'product_id', 'product_id');
     }
+
+    public function adjustment()
+    {
+        return $this->belongsTo(Adjustment::class);
+    }
 }
