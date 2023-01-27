@@ -21,14 +21,19 @@
                     <thead class="text-sm uppercase bg-primary/20">
                     <tr>
 
-                        <th class="tw-w-[10rem]"></th>
-                        <th class="py-3 px-6">#</th>
-                        <th class="py-3 px-6">Barcode / Kode</th>
-                        <th class="py-3 px-6">Nama Produk</th>
-                        <th class="py-3 px-6">Kategori</th>
-                        <th class="py-3 px-6 text-right">Stock</th>
-                        <th class="py-3 px-6">Satuan</th>
-                        <th class="py-3 px-6">Aksi</th>
+                        <th class="tw-w-[10rem]" rowspan="2"></th>
+                        <th class="py-3 px-6" rowspan="2">#</th>
+                        <th class="py-3 px-6" rowspan="2">Barcode / Kode</th>
+                        <th class="py-3 px-6" rowspan="2">Nama Produk</th>
+                        <th class="py-3 px-6" rowspan="2">Kategori</th>
+                        <th class="py-3 px-6 text-center border-b-1 border-gray-800" colspan="3">Stock Adjustment</th>
+                        <th class="py-3 px-6" rowspan="2">Satuan</th>
+                        <th class="py-3 px-6" rowspan="2">Aksi</th>
+                    </tr>
+                    <tr>
+                        <th class="py-3 px-6">Opening</th>
+                        <th class="py-3 px-6">Adjustment</th>
+                        <th class="py-3 px-6">Ending</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -38,10 +43,18 @@
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.barcode }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.name }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.category }}</td>
-                        <td class="group-hover:bg-base-300 py-4 px-6 text-right">{{ item.stock.total }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.stock.total }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.stock.adjust }}</td>
+                        <td class="group-hover:bg-base-300 py-4 px-6">{{ item.stock.ending }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.unit }}</td>
                         <td class="group-hover:bg-base-300 py-4 px-6">
-                            <Link as="button" :href="route('app.management.stock.destroy', item.id)" methods="DELETE" class="btn btn-success">Cocok</Link>
+                            <div v-if="item.status" class="alert alert-success p-2 shadow-lg rounded-none">
+                                <div>
+                                    <BaseIcon size="20" :path="mdiCheck"/> Done at {{ item.status }}
+                                </div>
+                            </div>
+                            <Link v-if="!item.status" as="button" :href="route('app.management.details.show', item.id)" class="btn rounded-none btn-sm btn-primary">Adjustment</Link>
+                            <Link v-if="!item.status" as="button" :href="route('app.management.stock.destroy', item.id)" method="DELETE" class="btn rounded-none btn-sm btn-warning">Cocok</Link>
                         </td>
                     </tr>
                     <tr v-else>
@@ -59,8 +72,10 @@
 import Breadcrumb from "@/Shared/Breadcrumb.vue";
 import Pagination from "@/Components/Pagination.vue";
 import PageTitle from "@/Components/PageTitle.vue";
+import BaseIcon from "@/Components/BaseIcon.vue";
 
 import {Head, useForm, Link, router} from '@inertiajs/vue3';
+import { mdiCheck } from "@mdi/js";
 import { watch } from 'vue'
 import { debounce } from "lodash";
 

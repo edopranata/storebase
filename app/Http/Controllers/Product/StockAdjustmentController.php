@@ -75,29 +75,33 @@ class StockAdjustmentController extends Controller
     {
         $adjustment = $stock->load('products');
 
-        $products = $adjustment->products()->with(['product.unit', 'product.category'])
+        $products = AdjustmentProduct::query()
+            ->where('adjustment_id', $adjustment->id)->with(['product.unit', 'product.category'])
             ->when($request->search, function ($query) use ($request) {
                 $query
-                    ->whereRelation('product', 'name', 'like', '%'.$request->search)
-                    ->orWhereRelation('product', 'barcode', 'like', '%'.$request->search);
+                    ->whereRelation('product', 'name', 'like', '%'.$request->search.'%')
+                    ->orWhereRelation('product', 'barcode', 'like', '%'.$request->search.'%');
             })
-        ->paginate(10)
+            ->paginate(10)
             ->withQueryString()
             ->through(function ($product) {
                 $item = $product->product;
                 return [
-                    'id' => $product->id,
-                    'barcode' => $item->barcode,
-                    'name' => $item->name,
-                    'stock' => [
+                    'id'            => $product->id,
+                    'barcode'       => $item->barcode,
+                    'name'          => $item->name,
+                    'stock'         => [
                         'warehouse' => $item->warehouse_stock,
                         'store'     => $item->store_stock,
-                        'total'     => $item->warehouse_stock ?? 0 + $item->store_stock ?? 0
+                        'total'     => ($item->warehouse_stock ?? 0) + ($item->store_stock ?? 0),
+                        'adjust'    => $product->adjustment_stock,
+                        'ending'    => $product->ending_stock,
                     ],
-                    'unit' => $item->unit ? $item->unit->name : null,
-                    'category' => $item->category ? $item->category->name : null,
-                    'created_by' => $item->user ? $item->user->name : null,
-                    'created_at' => $item->created_at->format('d-m-Y'),
+                    'unit'          => $item->unit ? $item->unit->name : null,
+                    'category'      => $item->category ? $item->category->name : null,
+                    'status'        => $product->status ? $product->status->format('d-m-Y H:i:s') : null,
+                    'created_by'    => $item->user ? $item->user->name : null,
+                    'created_at'    => $item->created_at->format('d-m-Y'),
                 ];
             });
 
@@ -107,11 +111,42 @@ class StockAdjustmentController extends Controller
         ]);
     }
 
+    public function show(Request $request, AdjustmentProduct $stock)
+    {
+        dd($stock);
+    }
+    public function update(Request $request, AdjustmentProduct $stock)
+    {
+
+    }
+
     public function destroy(Request $request, AdjustmentProduct $stock)
     {
-        $adjustment_stock = $stock->load('product');
         $product = $stock->product;
-        $current_stock = $product->warehouse_stock ?? 0 + $product->store_stock >> 0;
-        dd($product);
+        $current_stock = ($product->warehouse_stock ?? 0) + ($product->store_stock >> 0);
+        DB::beginTransaction();
+        try {
+            $stock->update([
+                'opening_stock'     => $current_stock,
+                'adjustment_stock'  => 0,
+                'ending_stock'      => $current_stock,
+                'status'            => now(),
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('alert', [
+                'type'    => 'success',
+                'title'   => 'Success',
+                'message' => "Data berhasil disimpan"
+            ]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert', [
+                'type'    => 'error',
+                'title'   => 'Failed',
+                'message' => "Data gagal disimpan: " . $exception->getMessage()
+            ]);
+        }
+
     }
 }
