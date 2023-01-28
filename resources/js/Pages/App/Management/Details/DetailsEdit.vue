@@ -93,7 +93,7 @@ import BaseIcon from "@/Components/BaseIcon.vue";
 import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { mdiArrowLeftBold } from "@mdi/js";
 import {onMounted, watch} from 'vue'
-import _, { debounce } from "lodash";
+import _ from "lodash";
 import Input from "@/Components/Input.vue";
 
 const breadcrumbs = [

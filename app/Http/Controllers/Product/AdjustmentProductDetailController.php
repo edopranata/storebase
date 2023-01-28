@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdjustmentProductDetailController extends Controller
 {
-
     public function index()
     {
         return to_route('app.management.stock.index');
@@ -21,7 +20,6 @@ class AdjustmentProductDetailController extends Controller
 
         $details = $detail->load(['stocks', 'product.unit', 'adjustment', 'details'])->loadSum('stocks', 'available_stock');
         $stock = $details->details;
-//        dd($stock->pluck('product_stock_id'));
 
         $stocks = $details->stocks()
             ->whereNotIn('id', $stock->pluck('product_stock_id'))

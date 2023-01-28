@@ -110,14 +110,17 @@ class StockAdjustmentController extends Controller
             'products'      => $products
         ]);
     }
-
-    public function show(Request $request, AdjustmentProduct $stock)
-    {
-        dd($stock);
-    }
     public function update(Request $request, AdjustmentProduct $stock)
     {
+        /**
+         * 1. Update stock toko pada table product / Product::class sesuai dengan ending_stock pada table adjustment_product / AdjustmentProduct::class
+         * 2. Udate stock pada table product_stock / ProductStock::class sesuai dengan ending_stock pada table adjustment_product_details / AdjustmentProductDetail::class
+         * 3. Update status pada table adjustment_product / AdjustmentProduct::class sesuai dengan tanggal dan waktu saat ini
+         */
 
+        $stock->load(['product', 'details']);
+        $product = $stock->product;
+        return $product;
     }
 
     public function destroy(Request $request, AdjustmentProduct $stock)
@@ -132,6 +135,8 @@ class StockAdjustmentController extends Controller
                 'ending_stock'      => $current_stock,
                 'status'            => now(),
             ]);
+
+            $stock->details()->delete();
 
             DB::commit();
             return redirect()->back()->with('alert', [

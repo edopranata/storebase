@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function (){
         Route::resource('management', \App\Http\Controllers\Product\ManagementController::class)->only(['index']);
         Route::group(['prefix' => 'management', 'as' => 'management.'], function () {
             Route::resource('product', \App\Http\Controllers\Product\ProductController::class)->only(['index']);
-            Route::resource('stock', \App\Http\Controllers\Product\StockAdjustmentController::class)->only(['index', 'store', 'edit', 'update', 'destroy', 'show']);
+            Route::resource('stock', \App\Http\Controllers\Product\StockAdjustmentController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
             Route::resource('details', \App\Http\Controllers\Product\AdjustmentProductDetailController::class)->only(['index', 'show', 'update', 'destroy']);
         });
 
