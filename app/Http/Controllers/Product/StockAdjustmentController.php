@@ -126,7 +126,7 @@ class StockAdjustmentController extends Controller
     public function destroy(Request $request, AdjustmentProduct $stock)
     {
         $product = $stock->product;
-        $current_stock = ($product->warehouse_stock ?? 0) + ($product->store_stock >> 0);
+        $current_stock = ($product->warehouse_stock ?? 0) + ($product->store_stock > 0);
         DB::beginTransaction();
         try {
             $stock->update([
