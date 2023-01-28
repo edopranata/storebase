@@ -55,7 +55,7 @@ const breadcrumbs = [
     },
     {
         "url": route('app.management.index'),
-        "label": "Management"
+        "label": "Product"
     },
     {
         "url": null,

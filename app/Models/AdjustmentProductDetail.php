@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class AdjustmentProductDetail extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
 }

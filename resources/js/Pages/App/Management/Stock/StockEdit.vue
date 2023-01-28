@@ -37,7 +37,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-if="props.products.data.length" class="hover:cursor-pointer group border-b" v-for="(item, index) in props.products.data">
+                    <Link as="tr" v-for="(item, index) in props.products.data" :href="item.status ? '' : route('app.management.details.show', item.id)" v-if="props.products.data.length" class="hover:cursor-pointer group border-b">
                         <th class="group-hover:bg-base-300 py-4 px-6"></th>
                         <th class="group-hover:bg-base-300 py-4 px-6">{{ props.products.from + index  }}</th>
                         <td class="group-hover:bg-base-300 py-4 px-6">{{ item.barcode }}</td>
@@ -53,10 +53,12 @@
                                     <BaseIcon size="20" :path="mdiCheck"/> Done at {{ item.status }}
                                 </div>
                             </div>
-                            <Link v-if="!item.status" as="button" :href="route('app.management.details.show', item.id)" class="btn rounded-none btn-sm btn-primary">Adjustment</Link>
-                            <Link v-if="!item.status" as="button" :href="route('app.management.stock.destroy', item.id)" method="DELETE" class="btn rounded-none btn-sm btn-warning">Cocok</Link>
+                            <span v-if="!item.status">
+                                <button v-if="item.stock.adjust !== 0 || item.stock.ending !== 0"  as="button" class="btn rounded-none btn-sm btn-primary shadow-lg">Adjustment</button>
+                            </span>
+                            <Link v-if="!item.status" as="button" :href="route('app.management.stock.destroy', item.id)" method="DELETE" class="btn rounded-none btn-sm btn-warning shadow-lg">Cocok</Link>
                         </td>
-                    </tr>
+                    </Link>
                     <tr v-else>
                         <td colspan="6" class="text-center border-b-2">No Data <Link v-if="props.products.current_page > 1" class="link link-primary" :href="route('app.management.product.index')">Goto First Page</Link></td>
                     </tr>
@@ -78,6 +80,7 @@ import {Head, useForm, Link, router} from '@inertiajs/vue3';
 import { mdiCheck } from "@mdi/js";
 import { watch } from 'vue'
 import { debounce } from "lodash";
+import Button from "@/Components/Button.vue";
 
 const breadcrumbs = [
     {
@@ -86,11 +89,15 @@ const breadcrumbs = [
     },
     {
         "url": route('app.management.index'),
-        "label": "Management"
+        "label": "Product"
     },
     {
-        "url": null,
+        "url":  route('app.management.stock.index'),
         "label": "Stock Adjustment"
+    },
+    {
+        "url":  null,
+        "label": props.adjustment.title
     },
 ]
 
@@ -120,5 +127,4 @@ watch(
     }, 500),
     { deep: true }
 );
-
 </script>

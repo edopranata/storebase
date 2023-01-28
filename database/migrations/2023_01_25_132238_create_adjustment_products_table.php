@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Adjustment::class)->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
             $table->foreignIdFor(\App\Models\Product::class)->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
-            $table->integer('opening_stock')->nullable();
-            $table->integer('adjustment_stock')->nullable();
-            $table->integer('ending_stock')->nullable();
+            $table->integer('opening_stock')->default(0);
+            $table->integer('adjustment_stock')->default(0);
+            $table->integer('ending_stock')->default(0);
             $table->timestamp('status')->nullable();
             $table->timestamps();
         });
