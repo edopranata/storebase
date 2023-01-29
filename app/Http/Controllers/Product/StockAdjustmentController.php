@@ -58,10 +58,12 @@ class StockAdjustmentController extends Controller
 
             Product::query()->chunk(100, function ($products){
                 foreach ($products as $item) {
-                    $item->update([
-                        'store_stock' => $item->store_stock + $item->warehouse_stock,
-                        'warehouse_stock'   => 0
-                    ]);
+                    if($item->warehouse_stock > 0){
+                        $item->update([
+                            'store_stock' => $item->store_stock + $item->warehouse_stock,
+                            'warehouse_stock'   => 0
+                        ]);
+                    }
                 }
             });
 
@@ -169,10 +171,11 @@ class StockAdjustmentController extends Controller
         }
     }
 
-    public function destroy(Request $request, AdjustmentProduct $stock)
+    public function destroy(AdjustmentProduct $stock)
     {
         $product = $stock->product;
-        $current_stock = ($product->warehouse_stock ?? 0) + ($product->store_stock > 0);
+        $current_stock = ($product->warehouse_stock ?? 0) + ($product->store_stock ?? 0);
+
         DB::beginTransaction();
         try {
             $stock->update([
