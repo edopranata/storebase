@@ -11,9 +11,9 @@ class AdjustmentProductDetail extends Model
 
     protected $guarded = ['id'];
 
-//    public function stock()
-//    {
-//        return $this->belongsTo(ProductStock::class);
-//    }
+    public function stock()
+    {
+        return $this->belongsTo(ProductStock::class);
+    }
 
 }

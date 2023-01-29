@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Adjustment;
 use App\Models\AdjustmentProduct;
 use App\Models\Product;
+use App\Models\ProductStock;
+use App\Rules\IfExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Sabberworm\CSS\Rule\Rule;
 
 class StockAdjustmentController extends Controller
 {
@@ -35,7 +38,7 @@ class StockAdjustmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => ['required', 'string', 'min:8']
+            'name'  => ['required', 'string', 'min:8', new IfExists]
         ]);
 
         DB::beginTransaction();
@@ -52,6 +55,15 @@ class StockAdjustmentController extends Controller
                         'product_id' => $pr->id
                     ];
                 });
+
+            Product::query()->chunk(100, function ($products){
+                foreach ($products as $item) {
+                    $item->update([
+                        'store_stock' => $item->store_stock + $item->warehouse_stock,
+                        'warehouse_stock'   => 0
+                    ]);
+                }
+            });
 
             $adjustment->products()->createMany($product);
 
@@ -118,9 +130,43 @@ class StockAdjustmentController extends Controller
          * 3. Update status pada table adjustment_product / AdjustmentProduct::class sesuai dengan tanggal dan waktu saat ini
          */
 
-        $stock->load(['product', 'details']);
-        $product = $stock->product;
-        return $product;
+        $adjustment = $stock->load(['product']);
+        $details = $adjustment->details()->get();
+
+        $adjustment_total = $details->sum('adjustment_stock');
+
+        DB::beginTransaction();
+        try {
+
+            // update store stock
+            $adjustment->product()->increment('store_stock', $adjustment_total);
+
+            // update available_stock
+            foreach ($details as $detail) {
+                ProductStock::query()
+                    ->where('id', $detail->product_stock_id)
+                    ->increment('available_stock', $detail->adjustment_stock);
+            }
+
+            // update status adjustment
+            $adjustment->update([
+                'status'    => now(),
+            ]);
+
+            DB::commit();
+            return redirect()->back()->with('alert', [
+                'type'    => 'success',
+                'title'   => 'Success',
+                'message' => "Data berhasil disimpan"
+            ]);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return redirect()->back()->with('alert', [
+                'type'    => 'error',
+                'title'   => 'Failed',
+                'message' => "Data gagal disimpan: " . $exception->getMessage()
+            ]);
+        }
     }
 
     public function destroy(Request $request, AdjustmentProduct $stock)

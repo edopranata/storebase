@@ -44,7 +44,7 @@
 import Breadcrumb from "@/Shared/Breadcrumb.vue";
 import PageTitle from "@/Components/PageTitle.vue";
 
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, router } from '@inertiajs/vue3';
 import { watch } from 'vue'
 import { debounce } from "lodash";
 
@@ -76,10 +76,10 @@ const form = useForm({
 })
 
 const save = () => {
-    console.log(form.name)
+
     form.post(route('app.management.stock.store'), {
         onSuccess: () => {
-
+            form.name = ''
         },
     });
 }
@@ -91,7 +91,7 @@ const form_search = useForm({
 watch(
     form_search,
     debounce(function (value) {
-        axios.get(
+        router.get(
             route('app.management.product.index'),
             { search: value.search },
             {
