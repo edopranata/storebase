@@ -107,7 +107,7 @@ class StockAdjustmentController extends Controller
                     'stock'         => [
                         'warehouse' => $item->warehouse_stock,
                         'store'     => $item->store_stock,
-                        'total'     => ($item->warehouse_stock ?? 0) + ($item->store_stock ?? 0),
+                        'total'     => $product->status ? $product->opening_stock : ($item->warehouse_stock ?? 0) + ($item->store_stock ?? 0),
                         'adjust'    => $product->adjustment_stock,
                         'ending'    => $product->ending_stock,
                     ],

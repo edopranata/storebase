@@ -47,11 +47,12 @@ class AdjustmentProductDetailController extends Controller
 
         DB::beginTransaction();
         try {
-            $detail->update([
-                'opening_stock'     => $ending_stock
-            ]);
             $detail->increment('adjustment_stock', $request->adjustment_stock);
-            $detail->increment('ending_stock', $request->ending_stock);
+
+            $detail->update([
+                'ending_stock'      => $detail->status ? $ending_stock + $request->adjustment_stock : $detail->opening_stock + $request->adjustment_stock,
+                'opening_stock'     => $ending_stock,
+            ]);
 
             $detail->details()->create([
                 'product_stock_id'  => $request->stock_id,
