@@ -30,7 +30,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app.4c3c68bf.css"
+      "assets/app.9bcb6405.css"
     ]
   },
   "resources/js/Pages/App/Inventory/InventoryIndex.vue": {
@@ -299,7 +299,7 @@
     ]
   },
   "resources/js/app.css": {
-    "file": "assets/app.4c3c68bf.css",
+    "file": "assets/app.9bcb6405.css",
     "src": "resources/js/app.css"
   }
 }
