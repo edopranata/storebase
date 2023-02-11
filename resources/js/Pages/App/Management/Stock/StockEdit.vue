@@ -63,6 +63,64 @@
                 </div>
             </Dialog>
         </TransitionRoot>
+
+        <TransitionRoot appear :show="isOpenDelete" as="template">
+            <Dialog as="div" @close="closeModalDelete" class="relative z-10">
+                <TransitionChild
+                    as="template"
+                    enter="duration-300 ease-out"
+                    enter-from="opacity-0"
+                    enter-to="opacity-100"
+                    leave="duration-200 ease-in"
+                    leave-from="opacity-100"
+                    leave-to="opacity-0"
+                >
+                    <div class="fixed inset-0 bg-black bg-opacity-25" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div
+                        class="flex min-h-full items-center justify-center p-4 text-center"
+                    >
+                        <TransitionChild
+                            as="template"
+                            enter="duration-300 ease-out"
+                            enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100"
+                            leave="duration-200 ease-in"
+                            leave-from="opacity-100 scale-100"
+                            leave-to="opacity-0 scale-95"
+                        >
+                            <DialogPanel
+                                class="w-full max-w-md transform overflow-hidden rounded-2xl p-6 text-left alert-warning align-middle shadow-xl transition-all"
+                            >
+                                <DialogTitle
+                                    as="h3"
+                                    class="text-lg font-medium font-bold leading-6"
+                                >
+                                    Stock Cocok
+                                </DialogTitle>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-900">
+                                        Tidak ada perubahan stock untuk produk ini?
+                                    </p>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary rounded-none"
+                                        @click="deleteStock"
+                                    >
+                                        Stock Cocok
+                                    </button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
     </template>
 
     <section class="px-4 grid gap-4">
@@ -116,7 +174,7 @@
                             <span v-if="!item.status">
                                 <button v-if="item.stock.adjust !== 0 || item.stock.ending !== 0" @click="formUpdate.id = item.id"  as="button" class="btn rounded-none btn-sm btn-primary shadow-lg">Adjustment</button>
                             </span>
-                            <Link v-if="!item.status" as="button"  :href="route('app.management.stock.destroy', item.id)" method="DELETE" class="btn rounded-none btn-sm btn-warning shadow-lg">Cocok</Link>
+                            <button v-if="!item.status" @click="formDelete.id = item.id" type="button" class="btn rounded-none btn-sm btn-warning shadow-lg">Cocok</button>
                         </td>
                     </tr>
                     <tr v-else>
@@ -177,6 +235,11 @@ const form_search = useForm({
 const formUpdate = useForm({
     id: '',
 })
+
+const formDelete = useForm({
+    id: '',
+})
+
 watch(
     form_search,
     debounce(function (value) {
@@ -191,9 +254,16 @@ watch(
     }, 500),
     { deep: true }
 );
+
 watch(() => _.cloneDeep(formUpdate), (current, old) => {
     if(current.id){
         openModalUpdate()
+    }
+})
+
+watch(() => _.cloneDeep(formDelete), (current, old) => {
+    if(current.id){
+        openModalDelete()
     }
 })
 
@@ -207,10 +277,28 @@ function openModalUpdate() {
     isOpenUpdate.value = true
 }
 
+const isOpenDelete = ref(false)
+
+function closeModalDelete() {
+    formDelete.id = '';
+    isOpenDelete.value = false
+}
+function openModalDelete() {
+    isOpenDelete.value = true
+}
+
 const updateStock = () => {
     formUpdate.patch(route('app.management.stock.update', formUpdate), {
         onSuccess: () => {
             closeModalUpdate()
+        }
+    })
+}
+
+const deleteStock = () => {
+    formDelete.delete(route('app.management.stock.destroy', formDelete), {
+        onSuccess: () => {
+            closeModalDelete()
         }
     })
 }

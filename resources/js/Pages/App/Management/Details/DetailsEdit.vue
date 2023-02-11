@@ -33,7 +33,6 @@
                 </div>
             </div>
         </div>
-        <form @submit.prevent="saveAdjustment"></form>
         <table class="w-full text-left text-base">
             <thead class="text-sm uppercase bg-primary/20">
             <tr>
@@ -69,7 +68,7 @@
                     <td class="py-4">
                         <input v-model="form.ending_stock[index]" type="text" disabled placeholder="Type here" class="input input-bordered w-full w-32" />
                     </td>
-                    <td class="py-4 px-6"><button type="button" class="btn btn-sm btn-primary rounded-none" @click="saveAdjustment(item.id, index)">Adjust</button> </td>
+                    <td class="py-4 px-6"><button type="button" :disabled="dataForm.processing" class="btn btn-sm btn-primary rounded-none" @click="saveAdjustment(item.id, index)">Adjust</button> </td>
                 </tr>
                 <tr>
                     <td class="py-4 px-6 text-right" colspan="7"><span v-if="dataForm.errors.ending_stock" class="text-sm text-error">{{ dataForm.errors.ending_stock }}</span></td>
