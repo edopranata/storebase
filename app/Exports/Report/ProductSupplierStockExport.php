@@ -3,6 +3,7 @@
 namespace App\Exports\Report;
 
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -40,7 +41,9 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
     private function products()
     {
         return Product::query()
-            ->with(['unit', 'stocks', 'prices.unit']);
+            ->with(['unit', 'prices.unit', 'stocks' => function($builder) {
+                return $builder->with('supplier')->whereRelation('supplier', 'available_stock', '>', '0')->get();
+            }]);
     }
 
     public function startCell(): string
@@ -51,8 +54,8 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
     public function headings(): array
     {
         return [
-            ['NO', 'BARCODE', 'NAMA PRODUK', 'STOCK', '', '', 'SATUAN', 'HARGA JUAL'],
-            ['', '', '', 'GUDANG', 'TOKO', 'TOTAL', '',  'ECERAN', 'PELANGGAN', 'GROSIR'],
+            ['NO', 'BARCODE', 'NAMA PRODUK', 'STOCK', '', '', 'SATUAN', 'HARGA JUAL', '', '', 'STOCK SUPPLIER'],
+            ['', '', '', 'GUDANG', 'TOKO', 'TOTAL', '',  'ECERAN', 'PELANGGAN', 'GROSIR', 'NAMA SUPPLIER','STOCK', 'SATUAN'],
         ];
     }
 
@@ -69,6 +72,9 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
             'H' => 15,
             'I' => 15,
             'J' => 15,
+            'K' => 25,
+            'L' => 10,
+            'M' => 15,
         ];
     }
 
@@ -91,12 +97,15 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A4:J4')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_DOUBLE);
-        $sheet->getStyle('D7:J7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT );
-        $sheet->getStyle('D6:J6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
+        $sheet->getStyle('A4:M4')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_DOUBLE);
+        $sheet->getStyle('D7:K7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT );
+        $sheet->getStyle('D6:M6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
 
-        $sheet->getStyle('A6:J6')->getBorders()->getTop()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A7:J7')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_MEDIUM);
+        $sheet->getStyle('A6:M6')->getBorders()->getTop()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A7:M7')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_MEDIUM);
+
+        $sheet->getStyle('K7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT );
+
 
         $sheet->mergeCells('D6:F6');
         $sheet->mergeCells('H6:J6');
@@ -104,17 +113,20 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
         $sheet->mergeCells('B6:B7');
         $sheet->mergeCells('C6:C7');
         $sheet->mergeCells('G6:G7');
+        $sheet->mergeCells('K6:M6');
 
 
         $sheet->getStyle('A6:A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
         $sheet->getStyle('B6:B7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
         $sheet->getStyle('C6:C7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
         $sheet->getStyle('G6:G7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
+        $sheet->getStyle('L6:M6')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER );
 
         $sheet->getStyle('A6:A7')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER );
         $sheet->getStyle('B6:B7')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER );
         $sheet->getStyle('C6:C7')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER );
         $sheet->getStyle('G6:G7')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER );
+        $sheet->getStyle('L6:M6')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER );
     }
 
     public function registerEvents(): array
@@ -136,8 +148,7 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
 
                 foreach ($products as $product) {
                     $stocks = collect($product->stocks)->sortByDesc('available_stock');
-
-                    dd($stocks);
+                    $prices = collect($product->prices)->sortByDesc('quantity');
 
                     $current_warehouse_stock = $product->warehouse_stock ?: 0;
                     $current_store_stock = $product->store_stock ?: 0;
@@ -150,38 +161,45 @@ class ProductSupplierStockExport implements WithEvents, WithTitle, WithDrawings,
                     $event->sheet->cellValue($col[$colCell] . $rowCell, $no);
                     $event->sheet->cellValue($col[$colCell + 1]. $rowCell, $product->barcode);
                     $event->sheet->cellValue($col[$colCell + 2]. $rowCell, $product->name);
-//                    $event->sheet->cellValue($col[$colCell + 3]. $rowCell, ($product->warehouse_stock ?: 0));
-//                    $event->sheet->cellValue($col[$colCell + 4]. $rowCell, ($product->store_stock ?: 0));
-//                    $event->sheet->cellValue($col[$colCell + 5]. $rowCell, (($product->warehouse_stock ?: 0) + $product->store_stock ?: 0));
-//                    $event->sheet->cellValue($col[$colCell + 6]. $rowCell, $product->unit->name);
+                    $event->sheet->cellValue($col[$colCell + 3]. $rowCell, ($product->warehouse_stock ?: 0));
+                    $event->sheet->cellValue($col[$colCell + 4]. $rowCell, ($product->store_stock ?: 0));
+                    $event->sheet->cellValue($col[$colCell + 5]. $rowCell, (($product->warehouse_stock ?: 0) + $product->store_stock ?: 0));
+                    $event->sheet->cellValue($col[$colCell + 6]. $rowCell, $product->unit->name);
 
-//                    if($stocks->count() > 1){
+//                    if($prices->count() > 1){
 //                        $rowCell++;
 //                    }
-//                    foreach ($stocks as $price) {
-//                        $warehouse_stock = $current_warehouse_stock / $price['quantity'];
-//                        $store_stock = $current_store_stock / $price['quantity'];
-//                        $total_stock = $current_total_stock / $price['quantity'];
-//
-//                        $event->sheet->cellValue($col[$colCell + 3]. $rowCell, (int) $warehouse_stock);
-//                        $event->sheet->cellValue($col[$colCell + 4]. $rowCell, (int) $store_stock);
-//                        $event->sheet->cellValue($col[$colCell + 5]. $rowCell, (int) $total_stock);
-//
-//                        $event->sheet->cellValue($col[$colCell + 6]. $rowCell, $price->unit->name);
-//
-//                        $event->sheet->cellValue($col[$colCell + 7]. $rowCell, $price['sell_price']);
-//                        $event->sheet->cellValue($col[$colCell + 8]. $rowCell, $price['customer_price']);
-//                        $event->sheet->cellValue($col[$colCell + 9]. $rowCell, $price['wholesale_price']);
-//
-//                        $event->sheet->getStyle($col[$colCell + 7]. $rowCell . ':' . $col[$colCell + 9]. $rowCell)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
-//
-//                        $current_warehouse_stock = $current_warehouse_stock - ( (int) $warehouse_stock * $price['quantity']);
-//                        $current_store_stock = $current_store_stock - ( (int) $store_stock * $price['quantity']);
-//                        $current_total_stock = $current_total_stock - ( (int) $total_stock * $price['quantity']);
-//
+                    foreach ($prices as $price) {
+                        $warehouse_stock = $current_warehouse_stock / $price['quantity'];
+                        $store_stock = $current_store_stock / $price['quantity'];
+                        $total_stock = $warehouse_stock + $store_stock;
+
+                        $event->sheet->cellValue($col[$colCell + 3]. $rowCell, (int) $warehouse_stock);
+                        $event->sheet->cellValue($col[$colCell + 4]. $rowCell, (int) $store_stock);
+                        $event->sheet->cellValue($col[$colCell + 5]. $rowCell, (int) $total_stock);
+
+                        $event->sheet->cellValue($col[$colCell + 6]. $rowCell, $price->unit->name);
+
+                        $event->sheet->cellValue($col[$colCell + 7]. $rowCell, $price['sell_price']);
+                        $event->sheet->cellValue($col[$colCell + 8]. $rowCell, $price['customer_price']);
+                        $event->sheet->cellValue($col[$colCell + 9]. $rowCell, $price['wholesale_price']);
+
+                        $event->sheet->getStyle($col[$colCell + 7]. $rowCell . ':' . $col[$colCell + 9]. $rowCell)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+
+                        $current_warehouse_stock = $current_warehouse_stock - ( (int) $warehouse_stock * $price['quantity']);
+                        $current_store_stock = $current_store_stock - ( (int) $store_stock * $price['quantity']);
+                        $current_total_stock = $current_total_stock - ( (int) $total_stock * $price['quantity']);
+
+                    }
+
+                    foreach ($stocks as $stock){
+//                        dd($stock);
+                        $event->sheet->cellValue($col[$colCell + 10]. $rowCell, $stock->supplier ? $stock->supplier->name : $stock->description);
+                        $event->sheet->cellValue($col[$colCell + 11]. $rowCell, $stock->available_stock);
+                        $event->sheet->cellValue($col[$colCell + 12]. $rowCell, $product->unit->name);
                         $rowCell++;
-                        $no++;
-//                    }
+                    }
+                    $no++;
                 }
 
             }
