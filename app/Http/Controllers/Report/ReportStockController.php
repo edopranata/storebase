@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Report;
 
 use App\Exports\Report\ProductStockExport;
+use App\Exports\Report\ProductSupplierStockExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
@@ -45,12 +46,8 @@ class ReportStockController extends Controller
     public function show($id, Request $request)
     {
         $category_id        = $request->category_id  ?: '';
-        $product = Product::query()
-            ->with(['unit', 'stocks', 'prices.unit'])
-            ->when($category_id, function ($category, $id){
-                $category->where('category_id', $id);
-            });
-        return Excel::download(new ProductStockExport($category_id), now()->format('d-m-Y')  . '-stock.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+
+        return Excel::download(new ProductSupplierStockExport(), now()->format('d-m-Y')  . '-stock.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 
     }
 
